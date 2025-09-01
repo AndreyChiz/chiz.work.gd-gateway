@@ -3,13 +3,27 @@ from datetime import datetime, timedelta
 
 from fastapi import Cookie, FastAPI, HTTPException, Response
 from fastapi.middleware.cors import CORSMiddleware
+from .middlewares.debug_log_middleware import debug_log_middleware
+
+import logging
+
+
+
 
 app = FastAPI()
+
+
+
 
 origins = [
     "http://localhost:5173",  # Vite React dev server
     "http://127.0.0.1:5173",
+    "https://chiz.work.gd",  # продакшен фронт
 ]
+
+
+
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -18,6 +32,17 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.middleware("http")(debug_log_middleware)
+
+
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origin_regex=".*",  # разрешает любой origin
+#     allow_credentials=True,  # важно для cookie
+#     allow_methods=["*"],  # разрешаем все методы
+#     allow_headers=["*"],  # разрешаем все заголовки
+# )
 
 # Мок база пользователей
 mock_user = {
