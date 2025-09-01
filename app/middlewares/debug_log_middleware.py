@@ -1,5 +1,5 @@
 from fastapi import Request
-from starlette.responses import Response
+from starlette.responses import Response, StreamingResponse
 import logging
 import json
 
@@ -34,38 +34,32 @@ async def debug_log_middleware(request: Request, call_next):
     # --- Обрабатываем ответ ---
     response: Response = await call_next(request)
 
-    # Перехватываем тело ответа
+    # --- Копируем тело ответа ---
     resp_body = b""
-    if hasattr(response, "body_iterator"):
-        body_iterator = response.body_iterator
-        new_iterator = []
-        async for chunk in body_iterator:
-            resp_body += chunk
-            new_iterator.append(chunk)
-        response.body_iterator = iter(new_iterator)  # чтобы клиент получил ответ
-
-    elif hasattr(response, "body") and response.body:
-        resp_body = response.body
-
-    if isinstance(resp_body, memoryview):
-        resp_body = resp_body.tobytes()
-    if isinstance(resp_body, bytes):
-        resp_body = resp_body.decode("utf-8", errors="ignore")
+    async for chunk in response.body_iterator:
+        resp_body += chunk
 
     # Заголовки ответа
     logger.info("RESPONSE HEADERS:")
     for k, v in dict(response.headers).items():
         logger.info(f"  {k}: {v}")
 
-    # Тело ответа
+    # Тело ответа (логируем копию)
+    text_body = resp_body.decode("utf-8", errors="ignore") if resp_body else ""
     try:
-        parsed = json.loads(resp_body)
+        parsed = json.loads(text_body)
         formatted_response = json.dumps(parsed, indent=2, ensure_ascii=False)
     except Exception:
-        formatted_response = resp_body[:2048] if resp_body else "<empty>"
+        formatted_response = text_body[:2048] if text_body else "<empty>"
 
     logger.info("RESPONSE BODY:")
     for line in formatted_response.splitlines():
         logger.info(f"  {line}")
 
-    return response
+    # Возвращаем оригинальный ответ клиенту
+    return StreamingResponse(
+        iter([resp_body]),
+        status_code=response.status_code,
+        headers=dict(response.headers),
+        media_type=response.media_type,
+    )

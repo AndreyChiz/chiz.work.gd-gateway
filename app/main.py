@@ -8,11 +8,7 @@ from .middlewares.debug_log_middleware import debug_log_middleware
 import logging
 
 
-
-
 app = FastAPI()
-
-
 
 
 origins = [
@@ -20,9 +16,6 @@ origins = [
     "http://127.0.0.1:5173",
     "https://chiz.work.gd",  # продакшен фронт
 ]
-
-
-
 
 
 app.add_middleware(
