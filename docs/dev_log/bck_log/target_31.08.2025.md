@@ -24,3 +24,7 @@ Tags: Auth dunicorn uvicorn fastapi server
 
 
 ### Решение 
+
+```sh
+uv add gunicorn 
+```
