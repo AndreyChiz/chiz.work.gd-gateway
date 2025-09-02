@@ -8,7 +8,7 @@ PROJECT_DIR="."
 IMAGE_NAME="chiz_api_gateway"
 CONTAINER_NAME="chiz_api_gateway"
 LOG_DIR="$PROJECT_DIR/logs"
-NETWORK_NAME="chiz_backend"
+NETWORK_NAME="nginx_chiz_backend"
 
 # -------------------------------
 # Подготовка логов
