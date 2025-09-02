@@ -71,7 +71,7 @@ def verify_token(token_type: str, token: str):
     return data["user_id"]
 
 
-@app.post("/api/login")
+@app.post("/login")
 def login(response: Response):
     # Мок: сразу "авторизуем"
     user_id = mock_user["id"]
@@ -104,7 +104,7 @@ def login(response: Response):
     return {"message": "Logged in successfully"}
 
 
-@app.get("/api/me")
+@app.get("/me")
 def get_me(access_token: str | None = Cookie(default=None)):
     """Защищённый эндпоинт"""
     if not access_token or not verify_token("access", access_token):
@@ -112,7 +112,7 @@ def get_me(access_token: str | None = Cookie(default=None)):
     return mock_user
 
 
-@app.post("/api/refresh")
+@app.post("/refresh")
 def refresh_token(response: Response, refresh_token: str | None = Cookie(default=None)):
     if not refresh_token or not verify_token("refresh", refresh_token):
         raise HTTPException(status_code=401, detail="Invalid refresh token")
