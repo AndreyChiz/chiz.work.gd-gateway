@@ -4,13 +4,11 @@ set -e
 # -------------------------------
 # Настройки
 # -------------------------------
-# PROJECT_DIR="/home/www/src/chiz/gate_way"
 PROJECT_DIR="."
 IMAGE_NAME="chiz_api_gateway"
 CONTAINER_NAME="chiz_api_gateway"
-HOST_PORT=8001
-CONTAINER_PORT=8001
 LOG_DIR="$PROJECT_DIR/logs"
+NETWORK_NAME="chiz_backend"
 
 # -------------------------------
 # Подготовка логов
@@ -18,10 +16,18 @@ LOG_DIR="$PROJECT_DIR/logs"
 mkdir -p "$LOG_DIR"
 
 # -------------------------------
-# Сборка образа с тегом latest
+# Сборка образа с тегом 
 # -------------------------------
 echo "Сборка Docker образа $IMAGE_NAME"
 docker build -t $IMAGE_NAME "$PROJECT_DIR"
+
+# -------------------------------
+# Создание сети (если нет)
+# -------------------------------
+if ! docker network ls | grep -q "$NETWORK_NAME"; then
+    echo "Создание сети $NETWORK_NAME"
+    docker network create $NETWORK_NAME
+fi
 
 # -------------------------------
 # Остановка старого контейнера (если есть)
@@ -38,9 +44,9 @@ fi
 echo "Запуск нового контейнера $CONTAINER_NAME"
 docker run -d \
     --name $CONTAINER_NAME \
-    -p $HOST_PORT:$CONTAINER_PORT \
     --restart unless-stopped \
     -v "$LOG_DIR":/app/logs \
+    --network $NETWORK_NAME \
     $IMAGE_NAME
 
 echo "Деплой завершён! Образ: $IMAGE_NAME"
