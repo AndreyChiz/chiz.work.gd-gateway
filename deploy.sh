@@ -40,7 +40,7 @@ docker run -d \
     --name $CONTAINER_NAME \
     -p $HOST_PORT:$CONTAINER_PORT \
     --restart unless-stopped \
-    -v "$LOG_DIR":/home/www/log/chiz/gateway \
+    -v "$LOG_DIR":/app/logs \
     $IMAGE_NAME:latest
 
 echo "Деплой завершён! Образ: $IMAGE_NAME:latest"
