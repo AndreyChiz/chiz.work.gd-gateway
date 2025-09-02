@@ -20,8 +20,8 @@ mkdir -p "$LOG_DIR"
 # -------------------------------
 # Сборка образа с тегом latest
 # -------------------------------
-echo "Сборка Docker образа $IMAGE_NAME:latest"
-docker build -t $IMAGE_NAME:latest "$PROJECT_DIR"
+echo "Сборка Docker образа $IMAGE_NAME"
+docker build -t $IMAGE_NAME "$PROJECT_DIR"
 
 # -------------------------------
 # Остановка старого контейнера (если есть)
@@ -41,6 +41,6 @@ docker run -d \
     -p $HOST_PORT:$CONTAINER_PORT \
     --restart unless-stopped \
     -v "$LOG_DIR":/app/logs \
-    $IMAGE_NAME:latest
+    $IMAGE_NAME
 
-echo "Деплой завершён! Образ: $IMAGE_NAME:latest"
+echo "Деплой завершён! Образ: $IMAGE_NAME"
