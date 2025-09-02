@@ -15,9 +15,9 @@ docker build -t chiz_api_gateway .
 ```
 
 ```sh
-docker run -d --name chiz_api_gateway \
+docker run -d --name chiz_api_gateway:v0.0.1   \
   -p 8001:8001 \
   --restart unless-stopped \
-  -v /home/www/log/chiz.work.gd:/app/logs \
-  chiz-backend
+  #-v ./log/chiz.work.gd:/app/logs \
+  chiz_api_gateway
 ```
