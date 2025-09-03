@@ -10,6 +10,10 @@ app = FastAPI(
     root_path="/api",
     docs_url="/docs",
     openapi_url="/openapi.json",
+    swagger_ui_parameters={
+        "deepLinking": True,  # ссылки на конкретные эндпоинты
+        "displayRequestDuration": True,  # показывать время запроса
+    },
 )
 
 origins = [
