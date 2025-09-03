@@ -5,11 +5,12 @@ from fastapi import Cookie, FastAPI, HTTPException, Response
 from fastapi.middleware.cors import CORSMiddleware
 from .middlewares.debug_log_middleware import debug_log_middleware
 
-import logging
 
-
-app = FastAPI()
-
+app = FastAPI(
+    root_path="/api",
+    docs_url="/docs",
+    openapi_url="/openapi.json",
+)
 
 origins = [
     "http://localhost:5173",  # Vite React dev server
@@ -29,15 +30,6 @@ app.add_middleware(
 app.middleware("http")(debug_log_middleware)
 
 
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origin_regex=".*",  # разрешает любой origin
-#     allow_credentials=True,  # важно для cookie
-#     allow_methods=["*"],  # разрешаем все методы
-#     allow_headers=["*"],  # разрешаем все заголовки
-# )
-
-# Мок база пользователей
 mock_user = {
     "id": 1,
     "username": "achi",
