@@ -53,7 +53,7 @@ mock_users = [
 ]
 
 # Псевдо-хранилище токенов (в реальности -> Redis/БД)
-issued_tokens = {"access": {}, "refresh": {}}
+issued_tokens = {"access": {123}, "refresh": {}}
 
 ACCESS_EXPIRE_MINUTES = 15
 REFRESH_EXPIRE_DAYS = 7
@@ -110,8 +110,8 @@ def verify_token(token_type: str, token: str):
 #     return {"message": "Logged in successfully"}
 
 
-@app.get("/me")
-def get_me(id: int):
+@app.get("/user/me")
+def get_me(id: int = 1):
     # ищем пользователя
     user = next((u for u in mock_users if u["id"] == id), None)
     if not user:
@@ -122,23 +122,38 @@ def get_me(id: int):
     return response
 
 
-# @app.post("/refresh")
-# def refresh_token(response: Response, refresh_token: str | None = Cookie(default=None)):
-#     if not refresh_token or not verify_token("refresh", refresh_token):
-#         raise HTTPException(status_code=401, detail="Invalid refresh token")
+@app.post("/auth/refresh")
+def refresh_token(response: Response, refresh_token: str | None = Cookie(default=None)):
+    if not refresh_token:
+        raise HTTPException(status_code=401, detail="Invalid refresh token")
 
-#     user_id = issued_tokens["refresh"][refresh_token]["user_id"]
+    response.set_cookie(
+        key="access_token",
+        value="My_chiz_access_token",
+        max_age=ACCESS_EXPIRE_MINUTES * 60,
+        secure=False,
+        samesite="lax",
+    )
 
-#     new_access_token = create_token(
-#         "access", user_id, timedelta(minutes=ACCESS_EXPIRE_MINUTES)
-#     )
-#     response.set_cookie(
-#         key="access_token",
-#         value=new_access_token,
-#         httponly=True,
-#         max_age=ACCESS_EXPIRE_MINUTES * 60,
-#         secure=False,
-#         samesite="lax",
-#     )
+    return {"message": "Access token refreshed"}
 
-#     return {"message": "Access token refreshed"}
+
+@app.post("/auth/register")
+def register(response: JSONResponse):
+    response = JSONResponse(content={"hey": "you"})
+    response.set_cookie(
+        key="refresh_token",
+        value="My_chiz_REFRESH_token",
+        httponly=True,
+        max_age=ACCESS_EXPIRE_MINUTES * 60,
+        secure=False,
+        samesite="lax",
+    )
+    response.set_cookie(
+        key="access_token",
+        value="My_chiz_ACCESS_token",
+        max_age=ACCESS_EXPIRE_MINUTES * 60,
+        secure=False,
+        samesite="lax",
+    )
+    return response
