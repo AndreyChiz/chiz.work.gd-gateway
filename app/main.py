@@ -18,11 +18,16 @@ app = FastAPI(
 )
 
 origins = [
+    "http://10.60.170.51",
+    "http://10.60.170.51:0",
     "http://localhost:5173",  # Vite React dev server
     "http://127.0.0.1:5173",
     "https://chiz.work.gd",  # продакшен фронт
 ]
 
+# origins = ["*"
+
+# ]
 
 app.add_middleware(
     CORSMiddleware,
