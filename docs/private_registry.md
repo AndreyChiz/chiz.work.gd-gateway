@@ -17,3 +17,12 @@ docker build -t <registry>/<repo>/<image>:<tag> .
 - myapp → имя репозитория (приложение)
 - latest → тег (можно указать 1.0.0, dev, 20250916, commit1234 и т.д.)
 - . → путь к контексту сборки (в данном случае текущая папка)
+
+
+
+```sh
+docker build -t reg.chiz.work.gd/gateway:latest .
+docker login reg.chiz.work.gd
+docker push reg.chiz.work.gd/gateway:latest
+
+```

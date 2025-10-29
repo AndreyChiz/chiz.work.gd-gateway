@@ -1,10 +1,25 @@
 [project]
-name = "chiz-work-gb-backend"
-version = "0.1.0"
-description = "Add your description here"
+name = "chiz-gateway"
+version = "0.1.0a"
+description = "chiz-gateway"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "fastapi[standard]>=0.116.1",
     "gunicorn>=23.0.0",
 ]
+
+
+
+[dependency-groups]
+dev = [
+    # Инструменты разработки
+    "pytest",
+    "pytest-asyncio",
+    "ruff",
+]
+
+[tool.pytest.ini_options]
+pythonpath = "."
+asyncio_mode = "auto"
+norecursedirs = ["pgdata"]
