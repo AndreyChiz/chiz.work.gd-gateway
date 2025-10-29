@@ -72,11 +72,16 @@ pipeline {
     }
 
     post {
+        
         always {
             echo "✅ Pipeline finished."
         }
         failure {
             echo "❌ Pipeline failed!"
+        }
+        always {
+            echo "🧹 Cleaning workspace..."
+            deleteDir() // очищаем весь рабочий каталог после любой сборки
         }
     }
 }
