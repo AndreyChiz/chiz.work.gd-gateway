@@ -26,11 +26,18 @@ pipeline {
                     // читаем имя и версию из pyproject.toml
                     def name = sh(script: "grep -E '^name\\s*=' pyproject.toml | sed 's/name\\s*=\\s*\"\\(.*\\)\"/\\1/'", returnStdout: true).trim()
                     def version = sh(script: "grep -E '^version\\s*=' pyproject.toml | sed 's/version\\s*=\\s*\"\\(.*\\)\"/\\1/'", returnStdout: true).trim()
+                    def project_name = sh(script: "grep 'keywords' pyproject.toml | sed 's/.*\\[\"\\(.*\\)\".*\\]/\\1/'", returnStdout: true).trim()
 
-                    env.IMAGE_NAME = "${name}:${version}"
 
-                    echo "🔹 IMAGE_NAME=${env.IMAGE_NAME}"
-                    echo "🔹 REGISTRY=${env.REGISTRY}"
+                    env.PROJECT_NAME = "${project_name}"
+                    env.IMAGE_NAME = "${project_name}-${name}:${version}"
+                    env.CONTAINER_NAME = "${project_name}-backend-service-${name}"
+
+
+                    echo "⚠️ PROJECT_NAME=${env.PROJECT_NAME}"
+                    echo "⚠️ IMAGE_NAME=${env.IMAGE_NAME}"
+                    echo "⚠️ CONTAINER_NAME=${env.CONTAINER_NAME}"
+                    echo "⚠️ REGISTRY=${env.REGISTRY}"
                 }
             }
         }
@@ -75,13 +82,11 @@ pipeline {
         
         always {
             echo "✅ Pipeline finished."
+            echo "🧹 Cleaning workspace..."
+            deleteDir() 
         }
         failure {
             echo "❌ Pipeline failed!"
-        }
-        always {
-            echo "🧹 Cleaning workspace..."
-            deleteDir() // очищаем весь рабочий каталог после любой сборки
         }
     }
 }

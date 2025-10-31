@@ -21,7 +21,13 @@ FROM python:3.12-slim
 
 WORKDIR /app   
 
-COPY --from=builder --chown=app:app /app /app
+COPY --from=builder --chown=app:app /app/.venv /app/.venv
+
+# Копируем только исходники (без .venv)
+COPY --from=builder --chown=app:app /app/app /app/app
+COPY --from=builder --chown=app:app /app/pyproject.toml /app/
+COPY --from=builder --chown=app:app /app/uv.lock /app/
+
 
 ENV PATH="/app/.venv/bin:$PATH"
 

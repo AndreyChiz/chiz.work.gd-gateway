@@ -1,0 +1,40 @@
+services:
+  app:
+    build: .
+    container_name: chiz_work_gd-gateway
+    entrypoint: [""]
+    command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8080
+    env_file:
+      - .env
+    environment:
+      - DEBUG=${DEBUG}
+      - ENV=${ENV}
+    volumes:
+      - ./app:/app/app
+    ports:
+      - "8080:8080"
+    networks:
+      - proxy
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16-alpine3.19
+    container_name: postgres_db
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${PG_USER}
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - ./postgres/db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - proxy
+    restart: unless-stopped
+
+networks:
+  proxy:
+    driver: bridge

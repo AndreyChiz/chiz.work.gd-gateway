@@ -1,7 +1,7 @@
 services:
   gateway:
     image: "${IMAGE_NAME}"
-    container_name: chiz-gateway
+    container_name: "${CONTAINER_NAME}"
     restart: unless-stopped
 
 

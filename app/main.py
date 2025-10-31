@@ -42,7 +42,7 @@ app.middleware("http")(debug_log_middleware)
 
 mock_users = [
     {
-        "id": 1,
+        "id": 5,
         "username": "achi",
         "email": "achi@example.com",
         "role": "admin",
@@ -145,7 +145,7 @@ def refresh_token(response: Response, refresh_token: str | None = Cookie(default
 
 @app.post("/auth/register")
 def register(response: JSONResponse):
-    response = JSONResponse(content={"hey": "you"})
+    response = JSONResponse(content={"hey": "you1"})
     response.set_cookie(
         key="refresh_token",
         value="My_chiz_REFRESH_token",

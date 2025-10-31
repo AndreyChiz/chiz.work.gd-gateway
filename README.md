@@ -19,16 +19,13 @@
 
 ---
 
- ## ⚙️ Установка и запуск <!--TODO: quick start -->
+ ## ⚙️ Quick start for dev dev
 
-1. Клонируйте репозиторий:
+ ```sh
+# if postgres volume is exist, you need to run:
+#sudo chmod 777 -R ./postgres   
 
-```sh
-git clone https://github.com/AndreyChiz/chiz.work.gd-gateway.git
-cd chiz.work.gd-gateway
-uv init --app
-uv add fastapi --extra standard
-uv add gunicorn
-uv run fatspi dev
-# uv run fastapi run
-```
+ docker compose -f compose.dev.yml  up --build -d
+ ```
+
+ *for prod all in CICD*
