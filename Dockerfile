@@ -38,6 +38,5 @@ CMD [\
     "app.main:app",\
     "--bind", "0.0.0.0:8080",\
     "--workers", "1",\
-    "--log-level", "debug",\
-    "--capture-output"\
+    "--log-level", "debug"\
     ]

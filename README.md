@@ -2,30 +2,24 @@
 
 ![Status](https://img.shields.io/badge/status-in%20development-yellow)
 
-**chiz.work.gd-gateway** — это API Gateway, построенный на FastAPI и Python. Он управляет маршрутизацией запросов, авторизацией и интеграцией с внутренними сервисами.  
+ ## ⚙️ Quick start 
 
-> ⚠️ Проект в разработке. Некоторые функции могут быть недоступны или изменяться без предупреждения.
+### Install in dev with stack
 
----
-
-## 💡 Основные возможности
-- Роутинг запросов к внутренним микросервисам
-- Авторизация и аутентификация через Bearer Token
-- Логирование и мониторинг запросов
-- Простая интеграция с Docker и Kubernetes
-
----
-
-
----
-
- ## ⚙️ Quick start for dev dev
-
+for use with local installed [Docker-infra-stack](https://github.com/AndreyChiz/Docker-Infra-Stack.git)
  ```sh
-# if postgres volume is exist, you need to run:
-#sudo chmod 777 -R ./postgres   
+git clone git@github.com:AndreyChiz/chiz.work.gd-gateway.git
+./scripts/pipeline_run_dev.sh
 
- docker compose -f compose.dev.yml  up --build -d
- ```
+```
+### Install dev just own
+```sh
+docker compose -f compose.dev.yml up --buils -d
+```
 
- *for prod all in CICD*
+*in this case the database will be installed between service*
+
+### Use in CICD
+
+1. Change env.HOST="chiz.work.gd" in jenkinsfile to env.HOST="<YOUR_HOST_DNS>"
+2. Create job in jenkins ui and set triggers like in standart flow

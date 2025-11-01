@@ -9,11 +9,12 @@ set -e
 # IMAGE_NAME="${NAME}:${VERSION}"
 echo "⚠️ Using image: $IMAGE_NAME"
 echo "⚠️ Рroject: $PROJECT_NAME"
+echo "⚠️ Host: $HOST"
 
 export IMAGE_NAME
 
 
 export COMPOSE_PROJECT_NAME="$PROJECT_NAME"
-docker compose up --build -d
+HOST=$HOST docker compose up --build -d
 
 echo "✅ Docker-compose started successfully. Containers running in background."

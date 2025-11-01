@@ -23,17 +23,16 @@ pipeline {
         stage('Set Variables') {
             steps {
                 script {
-                    // читаем имя и версию из pyproject.toml
                     def name = sh(script: "grep -E '^name\\s*=' pyproject.toml | sed 's/name\\s*=\\s*\"\\(.*\\)\"/\\1/'", returnStdout: true).trim()
                     def version = sh(script: "grep -E '^version\\s*=' pyproject.toml | sed 's/version\\s*=\\s*\"\\(.*\\)\"/\\1/'", returnStdout: true).trim()
                     def project_name = sh(script: "grep 'keywords' pyproject.toml | sed 's/.*\\[\"\\(.*\\)\".*\\]/\\1/'", returnStdout: true).trim()
 
-
+                    env.HOST="chiz.work.gd"
                     env.PROJECT_NAME = "${project_name}"
                     env.IMAGE_NAME = "${project_name}-${name}:${version}"
                     env.CONTAINER_NAME = "${project_name}-backend-service-${name}"
 
-
+                    echo "⚠️ HOST=${env.HOST}"
                     echo "⚠️ PROJECT_NAME=${env.PROJECT_NAME}"
                     echo "⚠️ IMAGE_NAME=${env.IMAGE_NAME}"
                     echo "⚠️ CONTAINER_NAME=${env.CONTAINER_NAME}"
