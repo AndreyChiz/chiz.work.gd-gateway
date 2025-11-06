@@ -4,6 +4,14 @@ services:
     container_name: "${CONTAINER_NAME}"
     restart: unless-stopped
 
+    secrets:
+      - gateway_db_pass
+    environment:
+      GATEWAY__DB__HOST: postgres_gateway_db
+      GATEWAY__DB__PORT: 5432
+      GATEWAY__DB: gateway_db
+      GATEWAY__DB_USER: ${GATEWAY__DB_USER}
+      GATEWAY__DB_PASS_FILE: /run/secrets/gateway_db_pass
 
     labels:
       - "traefik.enable=true"
@@ -15,7 +23,29 @@ services:
     networks:
       - proxy
 
+  postgres_gateway_db:
+    image: postgres:16-alpine3.19
+    container_name: "${CONTAINER_NAME}-db"
+    secrets:
+      - gateway_db_pass
+    environment:
+      POSTGRES_DB: gateway_db
+      POSTGRES_USER: ${GATEWAY__DB_USER}
+      POSTGRES_PASSWORD_FILE: /run/secrets/gateway_db_pass
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - /srv/storages/chiz_work_gd/gateway_db_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    networks:
+      - proxy
+    restart: unless-stopped
+
+secrets:
+  gateway_db_pass:
+    environment: GATEWAY__DB_PASS
+
 networks:
   proxy:
-    driver: bridge
     name: proxy
+    driver: bridge

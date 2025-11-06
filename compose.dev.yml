@@ -1,14 +1,20 @@
+
+name: chiz_work_gd-backend
 services:
   app:
     build: .
-    container_name: chiz_work_gd-gateway
+    container_name: chiz_work_gd-backend-service-gateway
     entrypoint: [""]
     command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8080
-    env_file:
-      - .env
+    secrets:
+      - gateway_db_pass
     environment:
-      - DEBUG=${DEBUG}
-      - ENV=${ENV}
+      DEBUG: true
+      GATEWAY__DB__HOST: postgres_gateway_db
+      GATEWAY__DB__PORT: 5432
+      GATEWAY__DB: gateway_db
+      GATEWAY__DB_USER: ${GATEWAY__DB_USER}
+      GATEWAY__DB_PASS_FILE: /run/secrets/gateway_db_pass
     volumes:
       - ./app:/app/app
     ports:
@@ -17,15 +23,15 @@ services:
       - proxy
     restart: unless-stopped
 
-  postgres:
+  postgres_gateway_db:
     image: postgres:16-alpine3.19
-    container_name: postgres_db
-    env_file:
-      - .env
+    container_name: chiz_work_gd-backend-service-gateway-db
+    secrets:
+      - gateway_db_pass
     environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${PG_USER}
-      POSTGRES_PASSWORD: ${PG_PASSWORD}
+      POSTGRES_DB: gateway_db
+      POSTGRES_USER: ${GATEWAY__DB_USER}
+      POSTGRES_PASSWORD_FILE: /run/secrets/gateway_db_pass
       PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
       - ./postgres/db-data:/var/lib/postgresql/data
@@ -37,4 +43,9 @@ services:
 
 networks:
   proxy:
+    name: proxy
     driver: bridge
+
+secrets:
+  gateway_db_pass:
+    environment: GATEWAY__DB_PASS

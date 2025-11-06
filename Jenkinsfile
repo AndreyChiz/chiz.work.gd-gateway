@@ -67,7 +67,12 @@ pipeline {
                 withCredentials([usernamePassword(
                     credentialsId: 'privat_docker_registry_cred',
                     usernameVariable: 'DOCKER_USER',
-                    passwordVariable: 'DOCKER_PASS')]) {
+                    passwordVariable: 'DOCKER_PASS'), 
+                usernamePassword(
+                    credentialsId: 'gateway_db_credentials',
+                    usernameVariable: 'GATEWAY__DB_USER',
+                    passwordVariable: 'GATEWAY__DB_PASS')
+                    ]) {
 
                     sh './scripts/run.sh'
 

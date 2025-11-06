@@ -1,7 +1,7 @@
 [project]
 keywords = ["chiz_work_gd"]
 name = "gateway"
-version = "0.1.1b"
+version = "0.1.0a"
 description = "chiz-gateway"
 readme = "README.md"
 requires-python = ">=3.12"
